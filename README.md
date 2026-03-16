@@ -1,5 +1,3 @@
-Aqui está o Markdown estruturado em primeira pessoa para você copiar e colar diretamente no arquivo `README.md` do seu repositório no GitHub:
-
 # Meu Projeto Integrador: Gerenciador de Tarefas Minimalista (To-Do List)
 
 Olá! Este é o repositório do meu projeto individual, onde estou desenvolvendo uma aplicação com foco em Vibe Coding, ou seja, programando através da intuição e linguagem natural. Neste projeto, atuarei como um "arquiteto de intenções", enquanto a IA assume o papel de gerar os códigos pesados. 
@@ -8,9 +6,6 @@ Para construir essa solução, utilizarei ferramentas de IA assistiva baseadas e
 
 ## Sobre o Projeto
 Escolhi desenvolver um **Gerenciador de Tarefas Simples (To-Do List)**. A ideia é criar um sistema que permita adicionar, remover e marcar tarefas como concluídas, explorando também o uso de persistência local e categorização de prioridades por cores.
-
-O desenvolvimento seguirá um ciclo de vida dividido em 4 fases principais, que documentarei abaixo.
-
 ---
 
 ### FASE 1: Ideação e Estruturação
