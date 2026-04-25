@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Meu Projeto Integrador: Gerenciador de Tarefas Minimalista (To-Do List)
 
 Olá! Este é o repositório do meu projeto individual, onde estou desenvolvendo uma aplicação com foco em Vibe Coding, ou seja, programando através da intuição e linguagem natural. Neste projeto, atuarei como um "arquiteto de intenções", enquanto a IA assume o papel de gerar os códigos pesados. 
@@ -96,4 +95,3 @@ Vá para o terminal onde o Back-end está rodando e pressione:
 (Se o sistema perguntar "Deseja finalizar o arquivo em lotes?", digite `S` e aperte Enter).
 
 Repita o mesmo procedimento de pressionar **`Ctrl + C`** no terminal onde o Front-end estiver rodando.
->>>>>>> 916caa6 (Projeto inicial: estrutura backend e frontend)
