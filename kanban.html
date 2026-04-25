@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadro Kanban - Gerenciador</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./global.css">
+    <link rel="stylesheet" href="./app.css">
+</head>
+<body>
+    <!-- Aplicação Principal -->
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Gerenciador</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="tasks.html" id="nav-list">Lista de Tarefas</a></li>
+                <li><a href="kanban.html" id="nav-kanban" class="active">Quadro Kanban</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn-secondary">Sair</button>
+            </div>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- View Kanban -->
+            <div id="kanban-view" class="view-section">
+                <header class="app-header">
+                    <h1>Quadro Kanban</h1>
+                    <p class="subtitle">Acompanhe o fluxo das suas tarefas</p>
+                </header>
+                
+                <div class="kanban-board">
+                    <div class="kanban-column" data-status="todo">
+                        <div class="column-header">A Fazer</div>
+                        <div class="column-content" id="col-todo"></div>
+                    </div>
+                    <div class="kanban-column" data-status="doing">
+                        <div class="column-header">Fazendo</div>
+                        <div class="column-content" id="col-doing"></div>
+                    </div>
+                    <div class="kanban-column" data-status="done">
+                        <div class="column-header">Concluído</div>
+                        <div class="column-content" id="col-done"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="./api.js"></script>
+    <script src="./auth.js"></script>
+    <script src="./kanban.js"></script>
+</body>
+</html>
