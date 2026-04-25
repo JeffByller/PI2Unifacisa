@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Meu Projeto Integrador: Gerenciador de Tarefas Minimalista (To-Do List)
 
 Olá! Este é o repositório do meu projeto individual, onde estou desenvolvendo uma aplicação com foco em Vibe Coding, ou seja, programando através da intuição e linguagem natural. Neste projeto, atuarei como um "arquiteto de intenções", enquanto a IA assume o papel de gerar os códigos pesados. 
@@ -37,3 +38,62 @@ A última etapa será dedicada à documentação final e apresentação do softw
 ---
 *Desenvolvido com o auxílio de IA Generativa e Vibe Coding.*
 ```
+=======
+# Gerenciador de Tarefas (Task Manager Kanban)
+
+Este é um projeto full-stack de gerenciamento de tarefas projetado para oferecer um quadro Kanban interativo, listas de tarefas dinâmicas e autenticação de usuários. 
+
+A aplicação foi estruturada separando as responsabilidades entre o back-end (Node.js com SQLite) e front-end (Single Page Application em Vanilla JS).
+
+## 🚀 Tecnologias Utilizadas
+
+- **Front-end:** HTML5, CSS3, JavaScript (Vanilla JS modularizado)
+- **Back-end:** Node.js, Express.js, bcrypt (autenticação), CORS
+- **Banco de Dados:** SQLite3
+
+## 📋 Pré-requisitos
+
+Para rodar este projeto, você precisará ter o [Node.js](https://nodejs.org/) instalado na sua máquina (recomendado versão LTS).
+
+## 🔧 Instalação
+
+1. Clone o repositório ou baixe o código para sua máquina.
+2. Abra o terminal e navegue até a pasta do back-end para instalar as dependências:
+   ```bash
+   cd backend
+   npm install
+   ```
+
+## ▶️ Como executar (Subir o projeto)
+
+Para o funcionamento correto, é necessário iniciar tanto a API do back-end quanto servir os arquivos do front-end.
+
+### 1. Iniciar o Servidor (Back-end)
+Abra um terminal, navegue até o diretório do back-end e rode o comando de inicialização:
+```bash
+cd backend
+npm start
+```
+*A mensagem `Servidor rodando na porta 3001` aparecerá confirmando que a API está ativa.*
+
+### 2. Iniciar a Interface (Front-end)
+Abra **um novo terminal** na raiz do projeto (onde estão as pastas `frontend` e `backend`) e utilize um servidor HTTP simples para a pasta do front-end. 
+
+Uma opção rápida utilizando o Node.js é:
+```bash
+npx serve frontend
+```
+Outra alternativa é abrir o projeto no VS Code e utilizar a extensão **Live Server** diretamente no arquivo `frontend/index.html`.
+
+Acesse a aplicação no seu navegador através da porta local fornecida (ex: `http://localhost:3000`).
+
+## 🛑 Como parar a execução
+
+Para desligar o projeto, você deve interromper os processos nos terminais que estão em execução.
+
+Vá para o terminal onde o Back-end está rodando e pressione:
+**`Ctrl + C`**
+(Se o sistema perguntar "Deseja finalizar o arquivo em lotes?", digite `S` e aperte Enter).
+
+Repita o mesmo procedimento de pressionar **`Ctrl + C`** no terminal onde o Front-end estiver rodando.
+>>>>>>> 916caa6 (Projeto inicial: estrutura backend e frontend)
