@@ -87,6 +87,16 @@ Se você não quiser ou não puder subir o servidor Node.js, o sistema entrará 
 * A lógica do front-end redirecionará o fluxo para o uso de `localStorage` (`saveToLocal()`), mantendo todas as funções de adicionar, marcar como concluída, quadro Kanban e exclusão ativas diretamente no seu navegador.
 
 ---
+## 🔄 Versionamento e Gestão de Versões
+
+O projeto implementa um **Painel de Versionamento** integrado (acessível clicando no badge de versão no rodapé da barra lateral). Esse painel permite simular e aplicar atualizações e downgrades em tempo real com logs de migração do banco de dados SQLite (ou localStorage se estiver offline).
+
+### Versões Disponíveis:
+* **`v1.0.0` (Base Estável):** Login + Kanban com botões de ação + Lista de Tarefas essenciais.
+* **`v1.1.0-beta` (Experimental):** Barra de busca em tempo real na lista de tarefas e Tema Midnight (violeta).
+* **`v1.2.0` (Completa - Drag & Drop):** Quadro Kanban móvel por arraste (estilo Jira), criação de novas colunas customizadas e alternador completo de Tema Claro/Escuro.
+
+---
 
 ## 🛑 Como parar a execução
 

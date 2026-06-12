@@ -34,6 +34,24 @@ const db = new sqlite3.Database(dbPath, (err) => {
             priorityColor TEXT,
             createdAt TEXT
         )`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )`, (err) => {
+            if (err) {
+                console.log('Erro ao criar tabela settings:', err);
+            } else {
+                db.run("INSERT OR IGNORE INTO settings (key, value) VALUES ('version', 'v1.0.0')");
+            }
+        });
+
+        db.run(`CREATE TABLE IF NOT EXISTS kanban_columns (
+            id TEXT PRIMARY KEY,
+            status TEXT UNIQUE,
+            name TEXT,
+            position INTEGER
+        )`);
     }
 });
 

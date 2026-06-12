@@ -2,36 +2,35 @@
 description: Ideia do projeto
 ---
 
-Meu Projeto Integrador: Gerenciador de Tarefas Minimalista (To-Do List)
-Olá! Este é o repositório do meu projeto individual, onde estou desenvolvendo uma aplicação com foco em Vibe Coding, ou seja, programando através da intuição e linguagem natural. Neste projeto, atuarei como um "arquiteto de intenções", enquanto a IA assume o papel de gerar os códigos pesados.
+# Meu Projeto Integrador: Gerenciador de Tarefas Minimalista (To-Do List & Kanban)
+Olá! Este é o repositório do meu projeto individual, desenvolvido com foco em Vibe Coding (programação guiada por intenções e linguagem natural) e desenvolvimento orientado a agentes de IA.
 
-Para construir essa solução, utilizarei ferramentas de IA assistiva baseadas em agentes, como o Lovable ou o Gemini Assistente, descrevendo o que desejo construir para que a IA gere e implemente a aplicação.
+---
 
-Sobre o Projeto
-Escolhi desenvolver um Gerenciador de Tarefas Simples (To-Do List). A ideia é criar um sistema que permita adicionar, remover e marcar tarefas como concluídas, explorando também o uso de persistência local e categorização de prioridades por cores.
-FASE 1: Ideação e Estruturação
-Nesta fase inicial, defini a base e o propósito do meu aplicativo:
+## 🚀 Status e Fases do Projeto
 
-O Problema: A dificuldade de organizar pendências rápidas do dia a dia devido à complexidade de aplicativos cheios de recursos que causam distração.
-Minha Persona: Criei o perfil do Lucas, um estudante de 20 anos que esquece prazos e precisa de uma ferramenta ágil.
-Proposta de Valor: Entregar um app minimalista, focado em tirar a carga mental do usuário em menos de 5 segundos.
-Lista de Funcionalidades: Adicionar tarefa, listar pendências, dar "check" em tarefas concluídas e excluir itens.
-Organização: A criação deste próprio repositório no GitHub.
-FASE 2: Arquitetura do Sistema
-Nesta segunda etapa, estruturarei como o sistema vai funcionar por trás das telas:
+### ✅ FASE 1: Ideação e Estruturação (Concluído)
+- **O Problema:** A dificuldade de organizar pendências rápidas do dia a dia devido a aplicativos cheios de recursos.
+- **Persona:** Lucas, estudante de 20 anos que precisa de uma ferramenta ágil.
+- **Proposta de Valor:** Aplicativo ultra-minimalista focado em reduzir a carga mental em menos de 5 segundos.
+- **Cores por Prioridade:** Vermelho (#ef4444) para Urgente, Amarelo (#eab308) para Importante, Azul (#3b82f6) para Comum.
 
-Farei a definição da stack tecnológica que os agentes de IA (Lovable/Gemini) irão gerar.
-Criarei os diagramas de arquitetura e farei a modelagem inicial de dados.
-Construirei o protótipo visual do sistema para guiar a interface.
-FASE 3: Construção do MVP (Produto Mínimo Viável)
-Aqui o projeto ganhará vida com a codificação intensiva via Vibe Coding:
+### ✅ FASE 2: Arquitetura do Sistema (Concluído)
+- Definição da stack tecnológica: HTML5, CSS3, Vanilla JS no Frontend; Node.js, Express.js e SQLite3 no Backend.
+- Criação dos diagramas de arquitetura (fluxo híbrido online/offline com persistência em `localStorage` como fallback).
 
-Utilizarei os agentes de IA para gerar o código do backend e do frontend.
-Farei a configuração do banco de dados (ou armazenamento local, para manter a simplicidade).
-Garantirei a integração completa entre as telas (front) e a lógica de dados (back).
-FASE 4: Entrega do Projeto
-A última etapa será dedicada à documentação final e apresentação do software:
+### ✅ FASE 3: Construção do MVP (Concluído)
+- Geração do código do frontend (telas de Login, Tasks e Kanban).
+- Configuração do banco de dados SQLite local com o backend Express.
+- Integração da lógica de login, sessões e sincronização de dados.
 
-Disponibilizarei todo o código gerado estruturado neste repositório do GitHub.
-Gravarei um vídeo de demonstração do projeto funcionando (com duração máxima de 5 minutos).
-Criarei uma documentação final contendo a estrutura obrigatória: a apresentação do problema, a solução criada, a arquitetura utilizada, uma demonstração ao vivo, como utilizei a IA no processo (meus prompts e interações com Gemini/Lovable) e as principais lições aprendidas.
+### ✅ FASE 4: Entrega da v1.0.0 (Concluído)
+- Disponibilização do código estruturado no repositório GitHub.
+- Configuração do fallback offline robusto para funcionamento local sem servidor.
+
+### 🔄 FASE 5: Versionamento e Evolução Contínua (Em Andamento)
+- **Objetivo:** Estabelecer o sistema atual como a versão oficial estável `v1.0.0`.
+- **Release Management:** Começar a gerar releases estruturados via tags no GitHub.
+- **Controle de Versão na UI:**
+  - Adicionar um botão de versão no frontend.
+  - Implementar um mecanismo simples de atualização/downgrade para gerenciar a transição entre versões estáveis do sistema.

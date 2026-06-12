@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskList = document.getElementById('task-list');
     const statsText = document.getElementById('stats-text');
     const priorityRadios = document.getElementsByName('priority');
+    const searchInput = document.getElementById('task-search');
 
     let tasks = [];
 
@@ -102,6 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            renderTasks();
+        });
+    }
+
     window.toggleComplete = async function(id) {
         const task = tasks.find(t => t.id === id);
         if (task) {
@@ -161,18 +168,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTasks() {
         if (!taskList) return;
         taskList.innerHTML = '';
-        if (tasks.length === 0) {
+        
+        let filteredTasks = [...tasks];
+        if (searchInput && searchInput.value.trim() !== '') {
+            const query = searchInput.value.trim().toLowerCase();
+            filteredTasks = filteredTasks.filter(t => t.title.toLowerCase().includes(query));
+        }
+
+        if (filteredTasks.length === 0) {
             taskList.innerHTML = `
                 <div class="empty-state">
                     ${emptyIcon}
-                    <p>Sua lista está limpa.<br>Adicione uma nova tarefa acima.</p>
+                    <p>${tasks.length === 0 ? 'Sua lista está limpa.<br>Adicione uma nova tarefa acima.' : 'Nenhuma tarefa corresponde à pesquisa.'}</p>
                 </div>
             `;
             updateStats();
             return;
         }
 
-        const sortedTasks = [...tasks].sort((a, b) => {
+        const sortedTasks = filteredTasks.sort((a, b) => {
             if (a.completed === b.completed) return new Date(b.createdAt) - new Date(a.createdAt);
             return a.completed ? 1 : -1;
         });
