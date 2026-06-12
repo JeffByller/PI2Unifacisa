@@ -142,13 +142,30 @@ app.post('/api/version', (req, res) => {
 app.get('/api/columns', (req, res) => {
     db.all("SELECT * FROM kanban_columns ORDER BY position", [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
+        const defaultCols = [
+            { id: '1', status: 'todo', name: 'A Fazer', position: 1 },
+            { id: '2', status: 'doing', name: 'Fazendo', position: 2 },
+            { id: '3', status: 'done', name: 'Concluído', position: 3 }
+        ];
+        
         if (!rows || rows.length === 0) {
-            const defaultCols = [
-                { id: '1', status: 'todo', name: 'A Fazer', position: 1 },
-                { id: '2', status: 'doing', name: 'Fazendo', position: 2 },
-                { id: '3', status: 'done', name: 'Concluído', position: 3 }
-            ];
+            defaultCols.forEach(col => {
+                db.run("INSERT OR IGNORE INTO kanban_columns (id, status, name, position) VALUES (?, ?, ?, ?)", [col.id, col.status, col.name, col.position]);
+            });
             return res.json(defaultCols);
+        }
+
+        let modified = false;
+        defaultCols.forEach(defCol => {
+            if (!rows.some(r => r.status === defCol.status)) {
+                db.run("INSERT OR IGNORE INTO kanban_columns (id, status, name, position) VALUES (?, ?, ?, ?)", [defCol.id, defCol.status, defCol.name, defCol.position]);
+                rows.push(defCol);
+                modified = true;
+            }
+        });
+
+        if (modified) {
+            rows.sort((a, b) => a.position - b.position);
         }
         res.json(rows);
     });
@@ -168,6 +185,9 @@ app.post('/api/columns', (req, res) => {
 
 app.delete('/api/columns/:status', (req, res) => {
     const { status } = req.params;
+    if (['todo', 'doing', 'done'].includes(status)) {
+        return res.status(400).json({ error: 'Não é permitido excluir colunas padrões.' });
+    }
     db.run("UPDATE tasks SET status = 'todo', completed = 0 WHERE status = ?", [status], function (err) {
         if (err) return res.status(500).json({ error: err.message });
         db.run("DELETE FROM kanban_columns WHERE status = ?", [status], function (err) {

@@ -442,6 +442,35 @@
     font-weight: 500;
 }
 
+.kanban-card.completed .kanban-card-title {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+/* Add task inside column button */
+.btn-add-task-col {
+    background: transparent;
+    border: none;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 0 0 16px 16px;
+}
+
+.btn-add-task-col:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.03);
+}
+
 .kanban-card-date {
     font-size: 0.7rem;
     color: var(--text-muted);
@@ -629,6 +658,20 @@
     border: 2px dashed rgba(59, 130, 246, 0.2);
     border-radius: 0 0 16px 16px;
     transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.column-header[draggable="true"] {
+    cursor: grab;
+}
+
+.kanban-column.column-dragging {
+    opacity: 0.4;
+    border: 2px dashed var(--accent-color) !important;
+}
+
+.kanban-column.column-drag-over {
+    border: 2px dashed var(--accent-color) !important;
+    background: rgba(59, 130, 246, 0.05) !important;
 }
 
 /* Modal Estilizado (Geral) */

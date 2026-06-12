@@ -17,22 +17,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isOffline = localStorage.getItem('offline_mode') === 'true';
         const isV12 = document.body.classList.contains('version-v1_2_0') || localStorage.getItem('system_version') === 'v1.2.0';
         
+        const defaultCols = [
+            { id: '1', status: 'todo', name: 'A Fazer', position: 1 },
+            { id: '2', status: 'doing', name: 'Fazendo', position: 2 },
+            { id: '3', status: 'done', name: 'Concluído', position: 3 }
+        ];
+
+        function healColumns(cols) {
+            let healed = false;
+            defaultCols.forEach(defCol => {
+                if (!cols.some(c => c.status === defCol.status)) {
+                    cols.push(defCol);
+                    healed = true;
+                }
+            });
+            if (healed) {
+                cols.sort((a, b) => a.position - b.position);
+            }
+            return healed;
+        }
+
         if (!isV12) {
-            columns = [
-                { id: '1', status: 'todo', name: 'A Fazer', position: 1 },
-                { id: '2', status: 'doing', name: 'Fazendo', position: 2 },
-                { id: '3', status: 'done', name: 'Concluído', position: 3 }
-            ];
+            columns = defaultCols;
             return;
         }
 
         if (isOffline) {
             const stored = localStorage.getItem('kanban_columns');
-            columns = stored ? JSON.parse(stored) : [
-                { id: '1', status: 'todo', name: 'A Fazer', position: 1 },
-                { id: '2', status: 'doing', name: 'Fazendo', position: 2 },
-                { id: '3', status: 'done', name: 'Concluído', position: 3 }
-            ];
+            columns = stored ? JSON.parse(stored) : defaultCols;
+            if (healColumns(columns)) {
+                localStorage.setItem('kanban_columns', JSON.stringify(columns));
+            }
             return;
         }
 
@@ -40,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch(`${window.API_URL}/columns`);
             if (res.ok) {
                 columns = await res.json();
+                healColumns(columns);
                 localStorage.setItem('kanban_columns', JSON.stringify(columns));
             } else {
                 throw new Error('Server columns query failed');
@@ -47,11 +63,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) {
             console.warn('Erro ao buscar colunas do back-end, usando locais...', err);
             const stored = localStorage.getItem('kanban_columns');
-            columns = stored ? JSON.parse(stored) : [
-                { id: '1', status: 'todo', name: 'A Fazer', position: 1 },
-                { id: '2', status: 'doing', name: 'Fazendo', position: 2 },
-                { id: '3', status: 'done', name: 'Concluído', position: 3 }
-            ];
+            columns = stored ? JSON.parse(stored) : defaultCols;
+            if (healColumns(columns)) {
+                localStorage.setItem('kanban_columns', JSON.stringify(columns));
+            }
         }
     }
 
@@ -138,6 +153,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     window.deleteColumn = async function(status) {
+        if (['todo', 'doing', 'done'].includes(status)) {
+            alert('Não é permitido excluir as colunas padrões (A Fazer, Fazendo, Concluído).');
+            return;
+        }
         if (confirm('Tem certeza que deseja excluir esta coluna? As tarefas serão movidas para "A Fazer".')) {
             const isOffline = localStorage.getItem('offline_mode') === 'true';
             
@@ -165,6 +184,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    window.reorderColumns = async function(dragColId, targetColId) {
+        const dragCol = columns.find(c => c.id === dragColId);
+        const targetCol = columns.find(c => c.id === targetColId);
+        if (!dragCol || !targetCol) return;
+
+        const dragIndex = columns.indexOf(dragCol);
+        const targetIndex = columns.indexOf(targetCol);
+
+        columns.splice(dragIndex, 1);
+        columns.splice(targetIndex, 0, dragCol);
+
+        columns.forEach((col, idx) => {
+            col.position = idx + 1;
+        });
+
+        localStorage.setItem('kanban_columns', JSON.stringify(columns));
+        renderKanban();
+
+        const isOffline = localStorage.getItem('offline_mode') === 'true';
+        if (!isOffline) {
+            try {
+                for (const col of columns) {
+                    await fetch(`${window.API_URL}/columns`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(col)
+                    });
+                }
+            } catch (err) {
+                console.warn('Erro ao salvar reordenação das colunas no backend', err);
+            }
+        }
+    };
+
     function renderKanban() {
         if (!boardElement) return;
         boardElement.innerHTML = '';
@@ -175,6 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const columnDiv = document.createElement('div');
             columnDiv.className = 'kanban-column';
             columnDiv.setAttribute('data-status', col.status);
+            columnDiv.setAttribute('data-id', col.id);
 
             const headerDiv = document.createElement('div');
             headerDiv.className = 'column-header';
@@ -188,6 +242,44 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <span>${window.escapeHTML(col.name)}</span>
                 ${editBtnHtml}
             `;
+
+            if (isV12) {
+                headerDiv.setAttribute('draggable', 'true');
+                headerDiv.addEventListener('dragstart', e => {
+                    e.dataTransfer.setData('text/column-id', col.id);
+                    columnDiv.classList.add('column-dragging');
+                });
+                headerDiv.addEventListener('dragend', () => {
+                    columnDiv.classList.remove('column-dragging');
+                });
+
+                columnDiv.addEventListener('dragover', e => {
+                    if (e.dataTransfer.types.includes('text/column-id')) {
+                        e.preventDefault();
+                        columnDiv.classList.add('column-drag-over');
+                    }
+                });
+                columnDiv.addEventListener('dragenter', e => {
+                    if (e.dataTransfer.types.includes('text/column-id')) {
+                        e.preventDefault();
+                        columnDiv.classList.add('column-drag-over');
+                    }
+                });
+                columnDiv.addEventListener('dragleave', () => {
+                    columnDiv.classList.remove('column-drag-over');
+                });
+                columnDiv.addEventListener('drop', async e => {
+                    if (e.dataTransfer.types.includes('text/column-id')) {
+                        e.preventDefault();
+                        columnDiv.classList.remove('column-drag-over');
+                        const dragColId = e.dataTransfer.getData('text/column-id');
+                        if (dragColId && dragColId !== col.id) {
+                            await window.reorderColumns(dragColId, col.id);
+                        }
+                    }
+                });
+            }
+
             columnDiv.appendChild(headerDiv);
 
             const contentDiv = document.createElement('div');
@@ -196,27 +288,48 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (isV12) {
                 contentDiv.addEventListener('dragover', e => {
-                    e.preventDefault();
-                    contentDiv.classList.add('drag-over');
+                    if (e.dataTransfer.types.includes('text/plain')) {
+                        e.preventDefault();
+                        contentDiv.classList.add('drag-over');
+                    }
                 });
                 contentDiv.addEventListener('dragenter', e => {
-                    e.preventDefault();
-                    contentDiv.classList.add('drag-over');
+                    if (e.dataTransfer.types.includes('text/plain')) {
+                        e.preventDefault();
+                        contentDiv.classList.add('drag-over');
+                    }
                 });
                 contentDiv.addEventListener('dragleave', () => {
                     contentDiv.classList.remove('drag-over');
                 });
                 contentDiv.addEventListener('drop', async e => {
-                    e.preventDefault();
-                    contentDiv.classList.remove('drag-over');
-                    const taskId = e.dataTransfer.getData('text/plain');
-                    if (taskId) {
-                        await window.moveTask(taskId, col.status);
+                    if (e.dataTransfer.types.includes('text/plain')) {
+                        e.preventDefault();
+                        contentDiv.classList.remove('drag-over');
+                        const taskId = e.dataTransfer.getData('text/plain');
+                        if (taskId) {
+                            await window.moveTask(taskId, col.status);
+                        }
                     }
                 });
             }
 
             columnDiv.appendChild(contentDiv);
+
+            const addCardBtn = document.createElement('button');
+            addCardBtn.className = 'btn-add-task-col';
+            addCardBtn.innerHTML = `
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Adicionar Tarefa
+            `;
+            addCardBtn.addEventListener('click', () => {
+                window.openTaskModalForCreate(col.status);
+            });
+            columnDiv.appendChild(addCardBtn);
+
             boardElement.appendChild(columnDiv);
         });
 
@@ -225,7 +338,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!colContent) return;
 
             const card = document.createElement('div');
-            card.className = 'kanban-card';
+            card.className = `kanban-card ${task.completed ? 'completed' : ''}`;
             card.style.setProperty('--task-color', task.priorityColor);
 
             if (isV12) {
@@ -317,10 +430,50 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    window.openTaskModalForCreate = function(columnStatus) {
+        if (!taskModal) return;
+        
+        const modalHeaderTitle = taskModal.querySelector('.modal-header h3');
+        if (modalHeaderTitle) modalHeaderTitle.textContent = 'Nova Tarefa';
+        
+        if (taskModalSaveBtn) taskModalSaveBtn.textContent = 'Criar Tarefa';
+        if (taskModalDeleteBtn) taskModalDeleteBtn.classList.add('hidden');
+        
+        taskModalId.value = '';
+        taskModalTitle.value = '';
+        
+        const radios = document.getElementsByName('task-modal-priority');
+        for (const radio of radios) {
+            radio.checked = (radio.value === '#3b82f6');
+        }
+        
+        if (taskModalStatusSelect) {
+            taskModalStatusSelect.innerHTML = '';
+            columns.forEach(col => {
+                const opt = document.createElement('option');
+                opt.value = col.status;
+                opt.textContent = col.name;
+                if (col.status === columnStatus) {
+                    opt.selected = true;
+                }
+                taskModalStatusSelect.appendChild(opt);
+            });
+        }
+        
+        taskModal.classList.add('active');
+        taskModalTitle.focus();
+    };
+
     window.openTaskModal = function(id) {
         if (!taskModal) return;
         const task = tasks.find(t => t.id === id);
         if (!task) return;
+
+        const modalHeaderTitle = taskModal.querySelector('.modal-header h3');
+        if (modalHeaderTitle) modalHeaderTitle.textContent = 'Editar Tarefa';
+        
+        if (taskModalSaveBtn) taskModalSaveBtn.textContent = 'Salvar Alterações';
+        if (taskModalDeleteBtn) taskModalDeleteBtn.classList.remove('hidden');
 
         taskModalId.value = task.id;
         taskModalTitle.value = task.title;
@@ -346,6 +499,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         taskModal.classList.add('active');
+        taskModalTitle.focus();
     };
 
     window.closeTaskModal = function() {
@@ -377,26 +531,37 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 }
 
+                const doneIndex = columns.findIndex(c => c.status === 'done');
                 const newCol = {
                     id: window.generateUUID(),
                     status,
                     name,
-                    position: columns.length + 1
+                    position: 1
                 };
 
-                columns.push(newCol);
+                if (doneIndex !== -1) {
+                    columns.splice(doneIndex, 0, newCol);
+                } else {
+                    columns.push(newCol);
+                }
+
+                columns.forEach((col, idx) => {
+                    col.position = idx + 1;
+                });
+
                 localStorage.setItem('kanban_columns', JSON.stringify(columns));
                 renderKanban();
                 window.closeColumnModal();
 
                 if (!isOffline) {
                     try {
-                        const res = await fetch(`${window.API_URL}/columns`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(newCol)
-                        });
-                        if (!res.ok) throw new Error();
+                        for (const col of columns) {
+                            await fetch(`${window.API_URL}/columns`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(col)
+                            });
+                        }
                     } catch (err) {
                         console.warn('Erro ao salvar coluna no backend, migrando para offline...');
                         localStorage.setItem('offline_mode', 'true');
@@ -444,9 +609,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (taskModalSaveBtn) {
         taskModalSaveBtn.addEventListener('click', async () => {
             const id = taskModalId.value;
-            const task = tasks.find(t => t.id === id);
-            if (!task) return;
-
             const title = taskModalTitle.value.trim();
             if (!title) return;
 
@@ -461,28 +623,63 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             const newStatus = taskModalStatusSelect.value;
-
-            task.title = title;
-            task.priorityColor = priorityColor;
-            task.status = newStatus;
-            task.completed = (newStatus === 'done');
-
-            saveToLocal();
-            renderKanban();
-            window.closeTaskModal();
-
             const isOffline = localStorage.getItem('offline_mode') === 'true';
-            if (!isOffline) {
-                try {
-                    const res = await fetch(`${window.API_URL}/tasks/${id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(task)
-                    });
-                    if (!res.ok) throw new Error();
-                } catch (err) {
-                    console.warn('Erro ao salvar tarefa no backend, migrando para offline...');
-                    localStorage.setItem('offline_mode', 'true');
+
+            if (!id) {
+                // CREATE NEW TASK
+                const newTask = {
+                    id: window.generateUUID(),
+                    title: title,
+                    completed: (newStatus === 'done'),
+                    status: newStatus,
+                    priorityColor: priorityColor,
+                    createdAt: new Date().toISOString()
+                };
+
+                tasks.push(newTask);
+                saveToLocal();
+                renderKanban();
+                window.closeTaskModal();
+
+                if (!isOffline) {
+                    try {
+                        const res = await fetch(`${window.API_URL}/tasks`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newTask)
+                        });
+                        if (!res.ok) throw new Error();
+                    } catch (err) {
+                        console.warn('Erro ao criar tarefa no backend, migrando para offline...');
+                        localStorage.setItem('offline_mode', 'true');
+                    }
+                }
+            } else {
+                // EDIT EXISTING TASK
+                const task = tasks.find(t => t.id === id);
+                if (!task) return;
+
+                task.title = title;
+                task.priorityColor = priorityColor;
+                task.status = newStatus;
+                task.completed = (newStatus === 'done');
+
+                saveToLocal();
+                renderKanban();
+                window.closeTaskModal();
+
+                if (!isOffline) {
+                    try {
+                        const res = await fetch(`${window.API_URL}/tasks/${id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(task)
+                        });
+                        if (!res.ok) throw new Error();
+                    } catch (err) {
+                        console.warn('Erro ao salvar tarefa no backend, migrando para offline...');
+                        localStorage.setItem('offline_mode', 'true');
+                    }
                 }
             }
         });
@@ -506,6 +703,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.openColumnModal('', '', '');
         });
     }
+
+    // Keydown event listener for modals (Escape to close, Enter to save)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (columnModal && columnModal.classList.contains('active')) {
+                window.closeColumnModal();
+            }
+            if (taskModal && taskModal.classList.contains('active')) {
+                window.closeTaskModal();
+            }
+        } else if (e.key === 'Enter') {
+            const activeEl = document.activeElement;
+            if (activeEl && (activeEl.tagName === 'BUTTON' || activeEl.tagName === 'A')) {
+                return;
+            }
+            if (columnModal && columnModal.classList.contains('active')) {
+                e.preventDefault();
+                columnModalSaveBtn.click();
+            } else if (taskModal && taskModal.classList.contains('active')) {
+                e.preventDefault();
+                taskModalSaveBtn.click();
+            }
+        }
+    });
 
     // Init data fetching
     await fetchColumns();

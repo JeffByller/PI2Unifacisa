@@ -310,4 +310,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         await sleep(800);
         window.location.reload();
     });
+
+    // Keydown event listener for version modal (Escape to close, Enter to submit/confirm)
+    document.addEventListener('keydown', (e) => {
+        if (modalOverlay.classList.contains('active')) {
+            if (e.key === 'Escape') {
+                if (closeBtn && closeBtn.style.display !== 'none') {
+                    toggleModal(false);
+                }
+            } else if (e.key === 'Enter') {
+                if (submitBtn && !submitBtn.disabled) {
+                    e.preventDefault();
+                    submitBtn.click();
+                }
+            }
+        }
+    });
 });
