@@ -21,6 +21,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Apply version class to body for CSS rules
     const bodyClass = `version-${activeVersion.replace(/\./g, '-').replace(/-/, '_')}`;
     document.body.classList.add(bodyClass);
+    
+    // Also add standardized class names (using all dashes and all underscores) to ensure matching
+    const dashedVersion = `version-${activeVersion.replace(/\./g, '-').replace(/_/g, '-')}`;
+    const underscoreVersion = `version-${activeVersion.replace(/\./g, '_').replace(/-/g, '_')}`;
+    document.body.classList.add(dashedVersion);
+    document.body.classList.add(underscoreVersion);
+
     window.SYSTEM_VERSION = activeVersion;
 
     // Apply theme if version is v1.1.0-beta and theme is midnight

@@ -41,17 +41,81 @@
                     </div>
                     <div class="add-column-container v1-2-only" id="add-column-container">
                         <button class="btn-add-column" id="add-column-btn">+ Adicionar Coluna</button>
-                        <div class="add-column-form hidden" id="add-column-form">
-                            <input type="text" id="new-column-title" placeholder="Nome da coluna..." autocomplete="off">
-                            <div class="add-column-actions">
-                                <button class="btn-save-column" id="save-column-btn">Salvar</button>
-                                <button class="btn-cancel-column" id="cancel-column-btn">Cancelar</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Modal para Coluna (Adicionar/Editar) -->
+    <div id="column-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="column-modal-title">Nova Coluna</h3>
+                <button class="modal-close" id="column-modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="column-modal-id">
+                <input type="hidden" id="column-modal-status">
+                <div class="input-group">
+                    <label for="column-modal-name">Nome da Coluna</label>
+                    <input type="text" id="column-modal-name" placeholder="Ex: Em Teste" autocomplete="off">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="column-modal-save-btn">Salvar</button>
+                <button class="btn-danger hidden" id="column-modal-delete-btn">Excluir Coluna</button>
+                <button class="btn-secondary" id="column-modal-cancel-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Tarefa (Editar/Excluir) -->
+    <div id="task-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Editar Tarefa</h3>
+                <button class="modal-close" id="task-modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="task-modal-id">
+                
+                <div class="input-group">
+                    <label for="task-modal-title">Título da Tarefa</label>
+                    <input type="text" id="task-modal-title" placeholder="Título..." autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <label>Prioridade</label>
+                    <div class="priority-selector">
+                        <label class="radio-label">
+                            <input type="radio" name="task-modal-priority" value="#3b82f6">
+                            <span class="radio-custom priority-low" title="Comum"></span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="task-modal-priority" value="#eab308">
+                            <span class="radio-custom priority-medium" title="Importante"></span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="task-modal-priority" value="#ef4444">
+                            <span class="radio-custom priority-high" title="Urgente"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="task-modal-status">Coluna (Status)</label>
+                    <select id="task-modal-status">
+                        <!-- Colunas dinâmicas preenchidas via JS -->
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="task-modal-save-btn">Salvar Alterações</button>
+                <button class="btn-danger" id="task-modal-delete-btn">Excluir Tarefa</button>
+                <button class="btn-secondary" id="task-modal-cancel-btn">Cancelar</button>
+            </div>
+        </div>
     </div>
 
     <script src="./api.js"></script>

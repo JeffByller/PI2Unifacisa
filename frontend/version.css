@@ -90,6 +90,7 @@
 }
 
 .vmodal-overlay.active {
+    display: flex !important;
     opacity: 1;
     pointer-events: auto;
 }
