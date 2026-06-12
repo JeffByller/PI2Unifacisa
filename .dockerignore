@@ -1,0 +1,7 @@
+backend/node_modules
+backend/database.sqlite
+.git
+.gitignore
+node_modules
+*.sqlite
+.agents
