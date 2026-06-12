@@ -55,9 +55,21 @@ O projeto foi organizado de forma limpa, eliminando redundâncias e separando as
 
 ## 🚀 Como Executar o Projeto (Subir o App)
 
-O sistema foi preparado para funcionar em **qualquer sistema operacional** (Windows, Linux, macOS) e possui um mecanismo de **fallback offline**: caso o servidor backend não esteja ativo, a aplicação funcionará de forma standalone salvando os dados no `localStorage` do navegador.
+### Opção A: Execução via Docker Compose (Recomendado)
 
-### Opção A: Execução Completa (Front + Back)
+O projeto está totalmente conteinerizado. Se você tiver o **Docker** e o **Docker Compose** instalados (por exemplo, através do Docker Desktop), você pode subir todo o ambiente (Front-end, Back-end e Banco SQLite persistente) com um único comando na raiz do projeto:
+
+```bash
+docker compose up --build -d
+```
+
+* O sistema estará acessível em `http://localhost:3000`.
+* O banco de dados SQLite persistirá automaticamente em um volume Docker (`task-manager-data`).
+* Para parar os containers, execute: `docker compose down`.
+
+---
+
+### Opção B: Execução Completa Manual (Front + Back)
 
 #### 1. Inicializar o Banco e Servidor (Back-end)
 Abra o terminal, navegue até a pasta `backend`, instale as dependências e inicie o servidor:
@@ -79,7 +91,7 @@ Ou simplesmente abra o arquivo `frontend/index.html` no navegador usando a exten
 
 ---
 
-### Opção B: Execução Standalone (Apenas Front-end via localStorage)
+### Opção C: Execução Standalone (Apenas Front-end via localStorage)
 
 Se você não quiser ou não puder subir o servidor Node.js, o sistema entrará automaticamente em **modo offline**. 
 * Basta abrir `frontend/index.html` no navegador.
