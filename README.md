@@ -27,31 +27,11 @@ O projeto foi estruturado com foco em **Vibe Coding** (programação guiada por 
 
 ---
 
-## 📁 Estrutura de Diretórios
+## 📁 Estrutura do Projeto e Arquitetura de Rede
 
-O projeto foi organizado de forma limpa, eliminando redundâncias e separando as responsabilidades:
+A documentação completa e atualizada sobre a estrutura de diretórios e a arquitetura de rede do sistema pode ser encontrada em [.agents/workflows/arquitetura_de_rede.md](file:///c:/Users/Jefferson%20Byller/Documents/PI2Unifacisa-main/.agents/workflows/arquitetura_de_rede.md).
 
-```text
-/
-├── .agents/                  # Definições de agentes e workflows de desenvolvimento
-├── backend/                  # API REST em Node.js
-│   ├── db.js                 # Configuração e inicialização do SQLite
-│   ├── server.js             # Rotas e controladores da API
-│   ├── package.json          # Dependências do servidor (com bcryptjs)
-│   └── database.sqlite       # Banco de dados local (ignorado pelo versionamento)
-├── frontend/                 # Interface do usuário (SPA)
-│   ├── index.html            # Tela de Login
-│   ├── tasks.html            # Lista de Tarefas Minimalista
-│   ├── kanban.html           # Quadro Kanban Interativo
-│   ├── *.css                 # Estilos visuais minimalistas e responsivos
-│   └── *.js                  # Lógica do front-end e comunicação com API
-├── .gitignore                # Arquivo para controle de versionamento
-├── implementation_plan.md    # Especificações de arquitetura do sistema
-├── task.md                   # Controle de tarefas do projeto
-└── README.md                 # Documentação principal do repositório
-```
-
----
+------
 
 ## 🚀 Como Executar o Projeto (Subir o App)
 
