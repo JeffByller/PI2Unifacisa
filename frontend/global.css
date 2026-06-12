@@ -10,6 +10,9 @@
     --priority-low: #3b82f6;
     --priority-med: #eab308;
     --priority-high: #ef4444;
+    
+    --scrollbar-thumb: rgba(255, 255, 255, 0.12);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
